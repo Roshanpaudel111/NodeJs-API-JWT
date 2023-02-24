@@ -1,11 +1,17 @@
 const router = require("express").Router();
 const User = require("../models/User");
+const { registrationValidation } = require("../validations");
 
-// router.route("/").post((req, res) => {
-//   res.send("register");
-// });
-//
+// Validations
+
 router.post("/register", async (req, res) => {
+  // Lets validate the data using JOI
+  const { error } = registrationValidation(req.body);
+  if (error) {
+    return res.json(error.details[0].message);
+  }
+
+  // Creates new user
   const user = new User({
     name: req.body.name,
     email: req.body.email,
